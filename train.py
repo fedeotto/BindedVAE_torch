@@ -36,21 +36,15 @@ BETA = 10
 #%% INITIALIZATIONS
 
 binded_data = binded_dataset(df)
-
 binded = BindedVAE(INPUT_SIZE, MASK_LATENT, INPUT_SIZE, RATIO_LATENT)
-
 optim_bvae = optim.Adam(binded.parameters(), lr = LEARNING_RATE)
-
 loader_binded = DataLoader(binded_data, batch_size = BATCH_SIZE)
 
 #%% TRAINING BINDED_VAE
 
 for epoch in range(N_EPOCHS):
-    
     print(f'Epoch: {epoch + 1} / {N_EPOCHS}')
-        
     for i, (masks , ratios) in enumerate(tqdm(loader_binded)):
-        
         optim_bvae.zero_grad()
         
         (recon_mask, mu_mask, logvar_mask,
@@ -73,9 +67,7 @@ for epoch in range(N_EPOCHS):
                                     logvar_ratio)
         
         loss_binded = BETA*loss_mask + loss_ratio
-        
         loss_binded.backward()
-                
         optim_bvae.step()
         
     print(f"Total Loss: {loss_binded:.3f}, \t Mask Loss: {loss_mask:.3f}, \t Ratio Loss : {loss_ratio:.3f}")
@@ -83,14 +75,11 @@ for epoch in range(N_EPOCHS):
 #%%
 
 binded = BindedVAE(INPUT_SIZE, MASK_LATENT, INPUT_SIZE, RATIO_LATENT)
-
 binded.load_state_dict(torch.load('./trained_binded_140ep.pkl'))
-
 
 generations = binded.generate_materials(40000)
         
 def plot_generations(generated_data):
-    
     plt.rcParams['figure.dpi'] = 100
     plt.rcParams['font.size'] = 14
     plt.rcParams['axes.grid'] = False
